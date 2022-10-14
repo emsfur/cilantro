@@ -95,9 +95,10 @@ html {
     font-size: 3rem;
     width: 5rem;
     text-align: center;
-    background-color: var(--cc1);
     cursor: pointer;
+    user-select: none;
 }
+
 
 .days div:hover:not(.today) {
     box-shadow:0px 0px 0px 2px white inset;
@@ -109,5 +110,21 @@ html {
 }
 
 .today {
-    background-color: var(--cc4);
+    box-shadow:0px 0px 0px 0.2rem var(--cc4) inset;
+}
+
+/* UPDATE COLOR SCHEME */
+.task-status-completed {
+    background-color: chartreuse;
+    box-shadow:0px 0px 0px 0.2rem chartreuse inset;
+
+}
+
+.task-status-failed {
+    box-shadow:0px 0px 0px 0.2rem darkred inset;
+    background-color: red;
+}
+
+.task-status-default {
+    background-color: var(--cc1);
 }
