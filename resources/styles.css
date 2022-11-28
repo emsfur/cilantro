@@ -15,18 +15,54 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: var(--cc3);
+    overflow: hidden
+
 }
 
 html {
     font-size: 62.5%;
+    overflow: hidden
 }
 
 .sidebar-container {
     background-color: var(--cc2);
-    color: white;
-
-    width: 17.5pc;
     height: 100vh;
+    width: 17.5pc;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-container {
+    overflow: hidden;
+    overflow-y: auto;
+    /* height: 80%; */
+    flex-grow: 1;
+}
+
+.tasks-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background-color: var(--cc4);
+    border-radius: 10px;
+}
+
+.sidebar-footer {
+    background-color: var(--cc1);
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 1.5rem 0 1rem;
+    font-size: 1.5rem;
+
+
+}
+
+.fa-plus {
+    padding-right: 2rem;
 }
 
 .calendar-container {
@@ -99,7 +135,6 @@ html {
     user-select: none;
 }
 
-
 .days div:hover:not(.today) {
     box-shadow:0px 0px 0px 2px white inset;
 }
@@ -110,21 +145,65 @@ html {
 }
 
 .today {
-    box-shadow:0px 0px 0px 0.2rem var(--cc4) inset;
+    box-shadow:0px 0px 0px 0.3rem var(--cc4) inset;
 }
 
 /* UPDATE COLOR SCHEME */
 .task-status-completed {
     background-color: chartreuse;
-    box-shadow:0px 0px 0px 0.2rem chartreuse inset;
+    box-shadow:0px 0px 0px 0.3rem chartreuse inset;
 
 }
 
 .task-status-failed {
-    box-shadow:0px 0px 0px 0.2rem darkred inset;
+    box-shadow:0px 0px 0px 0.3rem darkred inset;
     background-color: red;
 }
 
 .task-status-default {
     background-color: var(--cc1);
+}
+
+.home-area {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+
+    padding: 0 2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    background-color: darkcyan;
+    color: white;
+}
+
+.home-area:hover {
+    background-color: #007261;
+}
+
+.task {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 1.5rem 0 1rem 2rem;
+    font-size: 1.5rem;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.task:hover {
+    background-color: #202020;
+}
+
+.fa-bars {
+    padding-right: 2rem;
+}
+
+.fa-house {
+    padding-right: 1.4rem;
+}
+
+.fa-plus {
+    margin-left: 2rem;
 }

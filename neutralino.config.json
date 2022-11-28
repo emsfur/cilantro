@@ -7,6 +7,7 @@
   "url": "/",
   "enableServer": true,
   "enableNativeAPI": true,
+  "enableExtensions": false,
   "tokenSecurity": "one-time",
   "logging": {
     "enabled": true,
@@ -15,25 +16,16 @@
   "nativeAllowList": [
     "app.*",
     "os.*",
+    "storage.*",
+    "filesystem.*",
     "debug.log"
   ],
-  "globalVariables": {
-    "TEST1": "Hello",
-    "TEST2": [
-      2,
-      4,
-      5
-    ],
-    "TEST3": {
-      "value1": 10,
-      "value2": {}
-    }
-  },
+  "globalVariables": {},
   "modes": {
     "window": {
       "title": "cilantro",
-      "width": 1920,
-      "height": 1080,
+      "width": 1300,
+      "height": 800,
       "minWidth": 400,
       "minHeight": 400,
       "fullScreen": false,
@@ -41,34 +33,14 @@
       "icon": "/resources/icons/appIcon.png",
       "enableInspector": true,
       "borderless": false,
-      "maximize": true,
+      "maximize": false,
       "hidden": false,
       "resizable": true,
       "exitProcessOnClose": false
     },
-    "browser": {
-      "globalVariables": {
-        "TEST": "Test value browser"
-      },
-      "nativeBlockList": [
-        "filesystem.*"
-      ]
-    },
-    "cloud": {
-      "url": "/resources/#cloud",
-      "nativeAllowList": [
-        "app.*"
-      ]
-    },
-    "chrome": {
-      "width": 800,
-      "height": 500,
-      "args": "--user-agent=\"Neutralinojs chrome mode\"",
-      "nativeBlockList": [
-        "filesystem.*",
-        "os.*"
-      ]
-    }
+    "browser": {},
+    "cloud": {},
+    "chrome": {}
   },
   "cli": {
     "binaryName": "cilantro",

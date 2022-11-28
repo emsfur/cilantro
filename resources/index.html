@@ -5,11 +5,37 @@
     <title>NeutralinoJs sample app</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alasql"></script>      <!-- https://www.jsdelivr.com/package/npm/alasql -->
+
+
   </head>
   <body>
     <div class="sidebar-container">
-      <h1>Home</h1>
+      <div class="home-area">
+        <i class="fa-solid fa-house fa-xl"></i>
+        <h1>Home</h1>
+      </div>
+
+      <div class="tasks-container">
+        <div class="task">
+          <i class="fa-solid fa-bars fa-xl"></i> Piano
+        </div>
+        <div class="task">
+          <i class="fa-solid fa-bars fa-xl"></i> Exercise
+        </div>
+        <div class="task">
+          <i class="fa-solid fa-bars fa-xl"></i> Code
+        </div>
+      </div>
+
+      <footer class="sidebar-footer">
+        <i class="fa-solid fa-plus fa-lg"></i>
+        <input type="text" class="new-task" placeholder="Add Task">
+      </footer>
+
+
     </div>
+
 
     <div class="calendar-container">
       <div class="calendar">
@@ -23,15 +49,19 @@
         <div class="days">
         </div>
         <div class="edit-button-container">
-          <button type="button" data-value="edit-task-status">Edit</button>
-          <button type="button" data-value="save-task-status">Save</button>
+          <button type="button" class="edit-task-status">Edit</button>
+          <button type="button" class="get-JSON">Get JSON</button>
+          <!-- <button type="button" class="now">Test+</button> -->
         </div>
       </div>
     </div>
 
-
     <script src="js/neutralino.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/calendar.js"></script>
+    <!-- <script src="js/sql-attempt.js"></script> -->
+    <!-- <script src="js/alaSQL-attempt.js"></script> -->
+
+
     <script src="js/main.js"></script>
   </body>
 </html>
