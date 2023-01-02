@@ -1,5 +1,6 @@
 # Developer tools' files
 .lite_workspace.lua
+devNotes.txt
 
 # Neutralinojs binaries and builds
 /bin
@@ -12,3 +13,4 @@ neutralino.js
 .storage
 *.log
 .tmp/auth_info.json
+

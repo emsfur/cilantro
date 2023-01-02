@@ -5,11 +5,11 @@
 const date = new Date();
 // console.log(date.toISOString().split('T')[0]);
 
-// default classes added to all day elements
-const defClasses = "task-status-default"
-
 const taskToggle = ["task-status-default", "task-status-completed", "task-status-failed"];
 const taskIdx = 0;
+
+// default classes added to all day elements
+const defClasses = ``
 
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -29,9 +29,10 @@ async function start() {
         let taskJSON = JSON.parse(fullTaskData);
         // console.log(taskJSON.find(inp => inp.date === "2022-11-20")["done"])
 
-        alasql(`CREATE TABLE ${taskName} (date STRING PRIMARY KEY, done int)`);
-        alasql(`SELECT * INTO ${taskName} FROM ?`,[taskJSON]);
-
+        alasql(`CREATE TABLE ${taskName} (date DATE PRIMARY KEY, done int)`);
+        // alasql(`SELECT * INTO ${taskName} FROM ${[taskJSON]}`);
+        // alasql(`SELECT * INTO ${taskName} FROM ?`, [taskJSON]);
+        // alasql(`INSERT INTO ${taskName} (date, done) VALUES ?`, [taskJSON]);
     }
 }
 
@@ -46,12 +47,22 @@ function get_status_class(val) {
     }
 }
 
+// async function pushData(data) {
+//     let taskData = await Neutralino.storage.getData(taskName);
+//     console.log(taskData);
+// }
 
+// TODO: fix reloading calendar status
+function set_status(date) {
+    let res = alasql(`SELECT * FROM ${taskName} WHERE date = "${date}"`)
+    // console.log(res)
 
-
-async function pushData(data) {
-    let taskData = await Neutralino.storage.getData(taskName);
-    console.log(taskData);
+    // if (Object.keys(res).length !== 0) {
+    //     return get_status_class(res[0].done)
+    // } else {
+    //     return get_status_class(2)
+    // }
+    return get_status_class(2)
 }
 
 const renderCalendar = async function() {
@@ -72,16 +83,20 @@ const renderCalendar = async function() {
 
 
     for (let x = firstDayIdx; x > 0; x--) {
-        days += `<div class="prev-days ${defClasses}">${prevLastDay - x + 1}</div>`;
+        currDate = `${currYear}-${currMonth}-${prevLastDay - x + 1}`
+        days += `<div class="prev-days ${set_status(currDate)} ${defClasses}">${prevLastDay - x + 1}</div>`;
         daysCount++;
     }
 
     // goes through the 1st to last day of the month and if one of the day's matches the current date, sets the class as "today"
     for (let i = 1; i <= lastDay; i++) {
+        currDate = `${currYear}-${currMonth+1}-${i}`
         if ( i === new Date().getDate() && currMonth === new Date().getMonth() ) {
-            days += `<div class="today ${defClasses}">${i}</div>`;
+            days += `<div class="today ${set_status(currDate)} ${defClasses}">${i}</div>`;
         } else {
-            days += `<div class="${defClasses}">${i}</div>`; //get_status_class(currMonthData[i])
+            let focusDay = `${currYear}-${currMonth + 1}-${i}`
+            // ${set_status(focusDay)}
+            days += `<div class="${set_status(currDate)} ${defClasses}">${i}</div>`; //get_status_class(currMonthData[i])
         }
         daysCount++;
     }
@@ -89,7 +104,8 @@ const renderCalendar = async function() {
     // ensures blank space in calandar is filled by some of the next month ( 7 days * 6 rows)
     daysLeft = (7 * 6) - daysCount
     for (let j = 1; j <= daysLeft; j++) {
-        days += `<div class="next-days ${defClasses}">${j}</div>`;
+        currDate = `${currYear}-${((currMonth+1)%12)+1}-${j}`
+        days += `<div class="next-days ${set_status(currDate)} ${defClasses}">${j}</div>`;
     }
 
     monthDays.innerHTML = days;
@@ -105,26 +121,11 @@ document.querySelector('.next').addEventListener("click", () => {
     renderCalendar();
 });
 
-
-/* Ideas for Going About the Editting Task Status
- - user will only be allowed to edit one month and needs to press edit/save button in order to switch to another month
- - make save button flash red if user tries to switch months without saving
- - only allow user to update task status in edit mode
- - when entering edit mode, create a json object
- - each time user changes a status, record it to json object with the ID including date and task name probably
-    - possibility of generating IDs? or make something where task names cant be duplicates
- - once user saves, push that json object to the neutralino save system
- - update calander to read from neutralino save system at all times
-
- - creating a json object: https://www.youtube.com/watch?v=6I3qMe-jXDs&ab_channel=dcode
- - adding data to a json object: https://stackoverflow.com/questions/736590/add-new-attribute-element-to-json-object-using-javascript
-*/
-
 function input_data(date, val) {
-    alasql(`IF EXISTS (SELECT * FROM ${taskName} WHERE date = '${date}')
-    UPDATE ${taskName} SET done = ${val} WHERE date = '${date}'
+    alasql(`IF EXISTS (SELECT * FROM ${taskName} WHERE date = "${date}")
+    UPDATE ${taskName} SET done = ${val} WHERE date = "${date}"
     ELSE
-    INSERT INTO ${taskName} VALUES('${date}', ${val})`);
+    INSERT INTO ${taskName} VALUES( "${date}", ${val} )`);
 }
 
 function toggle_task_status(e) {
@@ -137,19 +138,19 @@ function toggle_task_status(e) {
         case "task-status-completed":
             targetClasses.remove(taskToggle[1]);
             targetClasses.add(taskToggle[2]);
-            input_data(targetDate, 0);
+            input_data(targetDate, 1);
             break;
         // cycles and sets status to default
         case "task-status-failed":
             targetClasses.remove(taskToggle[2]);
             targetClasses.add(taskToggle[0]);
-            input_data(targetDate, 2);
+            input_data(targetDate, 0);
             break;
         // cycles and sets status to completed
         default:
             targetClasses.remove(taskToggle[0]);
             targetClasses.add(taskToggle[1]);
-            input_data(targetDate, 1);
+            input_data(targetDate, 2);
             break;
     }
 }
@@ -158,18 +159,18 @@ function toggle_task_status(e) {
 var editEnabled = false;
 document.querySelector('.days').addEventListener('click', (event) => {
     // ensures that only the date elements are toggled, not the entire calendar
-    if (event.target.parentElement.className == "days" && editEnabled) {
+    if (event.target.parentElement.className === "days" && editEnabled) {
         toggle_task_status(event);
     }
 });
 
 async function edit_btn_handle(event) {
     let currText = event.target.innerText;
-    if (currText == "Edit") {
+    if (currText === "Edit") {
         editEnabled = true;
         event.target.innerHTML = "Save"
     }
-    else if (currText == "Save"){
+    else if (currText === "Save"){
         editEnabled = false;
         // upload data to neutalinoJS storage system
         await Neutralino.storage.setData(taskName, JSON.stringify( alasql(`SELECT * FROM ${taskName}`) ));
@@ -183,6 +184,7 @@ document.querySelector('.edit-task-status').addEventListener('click', edit_btn_h
 document.querySelector('.get-JSON').addEventListener('click', async function() {
     // await Neutralino.storage.getData(taskName).then(result => {console.log(result)});
     console.log(alasql(`SELECT * FROM ${taskName}`));
+
     });
 
 
@@ -202,6 +204,7 @@ const render = async () => {
     await start();
     // must be rendered once initially
     renderCalendar();
+    // input_data('2022-11-27',0);
 }
 
 render();

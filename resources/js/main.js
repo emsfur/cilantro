@@ -1,4 +1,5 @@
 function onWindowClose() {
+    // var taskName = alasql('SHOW TABLES')[0]['tableid']
     Neutralino.app.exit();
 }
 
