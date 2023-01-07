@@ -1,4 +1,3 @@
-
 // calendar source code: https://github.com/lashaNoz/Calendar
 // https://stackoverflow.com/questions/38884522/why-is-my-asynchronous-function-returning-promise-pending-instead-of-a-val
 
@@ -6,7 +5,7 @@ const date = new Date();
 // console.log(date.toISOString().split('T')[0]);
 
 const taskToggle = ["task-status-default", "task-status-completed", "task-status-failed"];
-const taskIdx = 0;
+// const taskIdx = 0;
 
 // default classes added to all day elements
 const defClasses = ``
@@ -29,9 +28,9 @@ async function start() {
         let taskJSON = JSON.parse(fullTaskData);
         // console.log(taskJSON.find(inp => inp.date === "2022-11-20")["done"])
 
-        alasql(`CREATE TABLE ${taskName} (date DATE PRIMARY KEY, done int)`);
+        alasql(`CREATE TABLE ${taskName} (date DATE, done int)`);
         // alasql(`SELECT * INTO ${taskName} FROM ${[taskJSON]}`);
-        // alasql(`SELECT * INTO ${taskName} FROM ?`, [taskJSON]);
+        alasql(`SELECT * INTO ${taskName} FROM ?`, [taskJSON]);
         // alasql(`INSERT INTO ${taskName} (date, done) VALUES ?`, [taskJSON]);
     }
 }
@@ -55,14 +54,14 @@ function get_status_class(val) {
 // TODO: fix reloading calendar status
 function set_status(date) {
     let res = alasql(`SELECT * FROM ${taskName} WHERE date = "${date}"`)
-    // console.log(res)
 
-    // if (Object.keys(res).length !== 0) {
-    //     return get_status_class(res[0].done)
-    // } else {
-    //     return get_status_class(2)
-    // }
-    return get_status_class(2)
+    if (Object.keys(res).length !== 0) {
+        return taskToggle[res[0].done]
+    } else {
+        // return get_status_class(2)
+        return taskToggle[0]
+    }
+    // return get_status_class(2)
 }
 
 const renderCalendar = async function() {
@@ -138,7 +137,7 @@ function toggle_task_status(e) {
         case "task-status-completed":
             targetClasses.remove(taskToggle[1]);
             targetClasses.add(taskToggle[2]);
-            input_data(targetDate, 1);
+            input_data(targetDate, 2);
             break;
         // cycles and sets status to default
         case "task-status-failed":
@@ -150,7 +149,7 @@ function toggle_task_status(e) {
         default:
             targetClasses.remove(taskToggle[0]);
             targetClasses.add(taskToggle[1]);
-            input_data(targetDate, 2);
+            input_data(targetDate, 1);
             break;
     }
 }
@@ -158,8 +157,11 @@ function toggle_task_status(e) {
 // allows user to click any date to switch task status (in edit mode only)
 var editEnabled = false;
 document.querySelector('.days').addEventListener('click', (event) => {
-    // ensures that only the date elements are toggled, not the entire calendar
-    if (event.target.parentElement.className === "days" && editEnabled) {
+    // ensures we're only able to edit days of the current month
+    let isCurrMonth = (event.target.className.includes("next-days") || event.target.className.includes("prev-days")) !== true;
+
+    // ensures that only the date elements are toggled, not the entire calendar itself
+    if (event.target.parentElement.className === "days" && isCurrMonth && editEnabled) {
         toggle_task_status(event);
     }
 });
@@ -180,34 +182,31 @@ async function edit_btn_handle(event) {
 
 // update button to say save after user presses it
 document.querySelector('.edit-task-status').addEventListener('click', edit_btn_handle);
-
 document.querySelector('.get-JSON').addEventListener('click', async function() {
     // await Neutralino.storage.getData(taskName).then(result => {console.log(result)});
     console.log(alasql(`SELECT * FROM ${taskName}`));
-
-    });
-
+});
 
 /* THE PLAN:
     - On opening of any task page, load the data of task from neu storage to indexDB using localbase
     - Before switching task or shutting program (attempt looking up how to run code before page redirect), push localDB data to neu storage
     - For UI pull data from indexDB
-
 */
 
-
-
+// .addEventListener('change', (e) => {
+//     console.log(e.currentTarget.value);
+//     e.currentTarget.value = "";
+//  });
 
 // TODO: REQUIRES RENDERCALENDAR TO WAIT FOR START (CODE PROLLY REDUNDANT)
 // start().then(renderCalendar()) didn't seem to work
-const render = async () => {
+const renderContent = async () => {
     await start();
     // must be rendered once initially
     renderCalendar();
-    // input_data('2022-11-27',0);
 }
 
-render();
+renderContent();
 
 // possible understanding of why db info is null on first run:
 // database stays static as code runs and updates it all afterwards, meaning code pulls from nothing the first time

@@ -50,20 +50,65 @@ html {
     border-radius: 10px;
 }
 
-.sidebar-footer {
+/* .sidebar-footer {
     background-color: var(--cc1);
     display: flex;
     justify-content: left;
     align-items: center;
     padding: 1.5rem 0 1rem;
     font-size: 1.5rem;
+} */
 
+/* .sidebar-footer {
+    background-color: transparent;
+} */
 
+.task-input {
+    background-color: var(--cc1);
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 1.5rem 0 1rem;
+    font-size: 1.5rem;
 }
+
+.new-task {
+    background-color: transparent;
+    color: white;
+    font-size: 1.5rem;
+    border: none;
+    border-bottom: 2px solid #007261;
+}
+
+.fa-circle-exclamation {
+    font-size: 2rem;
+    color: lightcoral;
+    padding-left: 1rem;
+    visibility: hidden;
+}
+
+.show {
+    visibility: visible;
+    -webkit-animation: fadeIn 0.2s;
+    animation: fadeIn 0.2s;
+  }
+
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
 
 .fa-plus {
     padding-right: 2rem;
 }
+
+
 
 .calendar-container {
     color: white;
