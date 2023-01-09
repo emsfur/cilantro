@@ -8,6 +8,7 @@
     --cc3: #1c4a47;
     --cc4: #007261;
     --cc5: #b1d2db;
+    --cc6: #183f3c;
 }
 
 body {
@@ -49,6 +50,8 @@ html {
     background-color: var(--cc4);
     border-radius: 10px;
 }
+
+
 
 /* .sidebar-footer {
     background-color: var(--cc1);
@@ -110,11 +113,12 @@ html {
 
 
 
-.calendar-container {
+.content-container {
     color: white;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-content: center;
+    flex-direction: column;
     height: 100vh;
 }
 
@@ -226,20 +230,59 @@ html {
     background-color: #007261;
 }
 
-.task {
+.taskTab {
     display: flex;
     justify-content: left;
     align-items: center;
+
+    background-color: transparent;
+    color: white;
+    border: none;
+
     padding: 1.5rem 0 1rem 2rem;
     font-size: 1.5rem;
+    width: 100%;
 
     cursor: pointer;
     user-select: none;
 }
 
-.task:hover {
-    background-color: #202020;
+.taskTab:hover {
+    -webkit-animation: tabFadeIn 0.3s;
+    animation: tabFadeIn 0.3s;
+    opacity: 70%;
 }
+
+@-webkit-keyframes tabFadeIn {
+    from {opacity: 100%;}
+    to {opacity: 70%;}
+  }
+
+  @keyframes tabFadeIn {
+    from {opacity: 100%;}
+    to {opacity: 70%;}
+  }
+
+.active {
+    background-color: var(--cc1);
+}
+
+.taskTab:active {
+    -webkit-animation: tabClick 0.1s;
+    animation: tabClick 0.1s;
+}
+
+@-webkit-keyframes tabClick {
+    0% {scale: 1;}
+    50% {scale: 0.98;}
+    100% {scale: 1;}
+}
+
+@keyframes tabClick {
+    0% {scale: 1;}
+    50% {scale: 0.98;}
+    100% {scale: 1;}
+  }
 
 .fa-bars {
     padding-right: 2rem;

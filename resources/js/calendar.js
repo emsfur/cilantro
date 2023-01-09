@@ -1,3 +1,12 @@
+// TODO: get rid of edit button and allow user to change w/o it
+// ADDITIONAL: Wont be saving it to storage till changing tasks, refresh, or closing
+
+// TODO: make it look nice...
+// ADDITIONAL: If I ever want to add customization to day cubes, I could just have a function that returns customized div html with name as input createDayDiv(dayNum, classes)
+
+// TODO: Use a template for the content area that fills based on sidebar input
+// https://www.youtube.com/watch?v=OSficvLDefM&ab_channel=LearnGoogleSheets%26ExcelSpreadsheets
+
 // calendar source code: https://github.com/lashaNoz/Calendar
 // https://stackoverflow.com/questions/38884522/why-is-my-asynchronous-function-returning-promise-pending-instead-of-a-val
 
@@ -51,7 +60,6 @@ function get_status_class(val) {
 //     console.log(taskData);
 // }
 
-// TODO: fix reloading calendar status
 function set_status(date) {
     let res = alasql(`SELECT * FROM ${taskName} WHERE date = "${date}"`)
 
@@ -217,3 +225,10 @@ renderContent();
 // Use ajax to load data then use jay harris comment in link below to put html page in div
 // https://stackoverflow.com/questions/17636528/how-do-i-load-an-html-page-in-a-div-using-javascript
 // understanding ajax: https://www.youtube.com/watch?v=82hnvUYY6QA&ab_channel=TraversyMedia
+
+if ('content' in document.createElement('template')) {
+    let temp = document.getElementById('testTemp');
+    let content = temp.content;
+    console.log(content)
+    document.body.appendChild(content)
+}
