@@ -27,33 +27,37 @@
 
 
     <div class="content-container">
-      <template id="testTemp">
-        <h1 class="text">PAINT</h1>
-      </template>
+      <div class="content has-tasks">
+        <div class="header-container">
+          <h1 class="content-header">Default</h1>
+        </div>
 
-      <!-- <div>Paint</div> -->
-      <div class="calendar">
-        <div class="month">
-          <i class="fas fa-angle-left prev"></i>
-          <div class="date">
-            <h1></h1>
+        <div class="calendar">
+          <div class="month">
+            <i class="fas fa-angle-left prev"></i>
+            <div class="date">
+              <h1></h1>
+            </div>
+            <i class="fas fa-angle-right next"></i>
           </div>
-          <i class="fas fa-angle-right next"></i>
+          <div class="days">
+          </div>
+          <div class="edit-button-container">
+            <button type="button" class="edit-task-status">Edit</button>
+            <button type="button" class="get-JSON">Get JSON</button>
+            <button type="button" class="del-task">Delete</button>
+          </div>
         </div>
-        <div class="days">
-        </div>
-        <div class="edit-button-container">
-          <button type="button" class="edit-task-status">Edit</button>
-          <button type="button" class="get-JSON">Get JSON</button>
-          <!-- <button type="button" class="now">Test+</button> -->
-        </div>
+      </div>
+
+      <div class="content no-tasks">
+        <h1>There are no tasks, try adding one</h1>
       </div>
     </div>
 
     <script src="js/neutralino.js"></script>
     <script src="js/calendar.js"></script>
     <script src="js/sidebar.js"></script>
-
 
     <script src="js/main.js"></script>
   </body>

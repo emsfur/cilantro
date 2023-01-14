@@ -1,3 +1,5 @@
+// TODO: learning that I can just call in functions from other scripts, so refactor and organize using that
+
 // TODO: get rid of edit button and allow user to change w/o it
 // ADDITIONAL: Wont be saving it to storage till changing tasks, refresh, or closing
 
@@ -28,30 +30,20 @@ var taskName = 'task';
 var db = undefined;
 var taskDB = undefined;
 
-async function start() {
+
+async function start(taskName) {
+    // let taskList = alasql(`SELECT * FROM taskList ORDER BY added ASC`)
+    let fullTaskData = '{}';
+
     try {
-        var fullTaskData = await Neutralino.storage.getData(taskName);
+        fullTaskData = await Neutralino.storage.getData(taskName);
     } catch {
         await Neutralino.storage.setData(taskName, JSON.stringify(tempJSON) );
     } finally {
         let taskJSON = JSON.parse(fullTaskData);
-        // console.log(taskJSON.find(inp => inp.date === "2022-11-20")["done"])
 
         alasql(`CREATE TABLE ${taskName} (date DATE, done int)`);
-        // alasql(`SELECT * INTO ${taskName} FROM ${[taskJSON]}`);
         alasql(`SELECT * INTO ${taskName} FROM ?`, [taskJSON]);
-        // alasql(`INSERT INTO ${taskName} (date, done) VALUES ?`, [taskJSON]);
-    }
-}
-
-function get_status_class(val) {
-    switch (val) {
-        case 0:
-            return taskToggle[2];
-        case 1:
-            return taskToggle[1];
-        default:
-            return taskToggle[0];
     }
 }
 
@@ -66,13 +58,11 @@ function set_status(date) {
     if (Object.keys(res).length !== 0) {
         return taskToggle[res[0].done]
     } else {
-        // return get_status_class(2)
         return taskToggle[0]
     }
-    // return get_status_class(2)
 }
 
-const renderCalendar = async function() {
+const renderCalendar = async function(taskName) {
     date.setDate(1);
 
     const currMonth = date.getMonth();
@@ -192,29 +182,31 @@ async function edit_btn_handle(event) {
 document.querySelector('.edit-task-status').addEventListener('click', edit_btn_handle);
 document.querySelector('.get-JSON').addEventListener('click', async function() {
     // await Neutralino.storage.getData(taskName).then(result => {console.log(result)});
-    console.log(alasql(`SELECT * FROM ${taskName}`));
+    // console.log(alasql(`SELECT * FROM ${taskName}`));
+    console.log(alasql(`SELECT * FROM taskList`));
+
 });
+document.querySelector('.del-task').addEventListener('click', async function() {
+    // remove taskData from taskList and alasql, save to file, then delete file and re-render sidebar
+    alasql(`DELETE FROM taskList WHERE name = '${taskName}'`)
+    await Neutralino.storage.setData("taskList", JSON.stringify( alasql(`SELECT * FROM taskList`) ));
 
-/* THE PLAN:
-    - On opening of any task page, load the data of task from neu storage to indexDB using localbase
-    - Before switching task or shutting program (attempt looking up how to run code before page redirect), push localDB data to neu storage
-    - For UI pull data from indexDB
-*/
-
-// .addEventListener('change', (e) => {
-//     console.log(e.currentTarget.value);
-//     e.currentTarget.value = "";
-//  });
+    await Neutralino.filesystem.removeFile(`./.storage/${taskName}.neustorage`);
+    renderTasks();
+    loadInitialContent();
+})
 
 // TODO: REQUIRES RENDERCALENDAR TO WAIT FOR START (CODE PROLLY REDUNDANT)
 // start().then(renderCalendar()) didn't seem to work
-const renderContent = async () => {
-    await start();
-    // must be rendered once initially
-    renderCalendar();
+async function renderContent(taskNameInput) {
+    // when loading new content, we change global var
+    taskName = taskNameInput
+    await start(taskNameInput);
+    renderCalendar(taskNameInput);
+
 }
 
-renderContent();
+renderContent(taskName);
 
 // possible understanding of why db info is null on first run:
 // database stays static as code runs and updates it all afterwards, meaning code pulls from nothing the first time
@@ -226,9 +218,11 @@ renderContent();
 // https://stackoverflow.com/questions/17636528/how-do-i-load-an-html-page-in-a-div-using-javascript
 // understanding ajax: https://www.youtube.com/watch?v=82hnvUYY6QA&ab_channel=TraversyMedia
 
-if ('content' in document.createElement('template')) {
-    let temp = document.getElementById('testTemp');
-    let content = temp.content;
-    console.log(content)
-    document.body.appendChild(content)
-}
+
+// // When ready, move this to the top and put all calendar stuff inside template
+// if ('content' in document.createElement('template')) {
+//     let temp = document.getElementById('testTemp');
+//     let content = temp.content;
+//     console.log(content)
+//     document.body.appendChild(content)
+// }

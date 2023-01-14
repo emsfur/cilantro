@@ -42,6 +42,9 @@ Neutralino.events.on("trayMenuItemClicked", onTrayMenuItemClicked);
 Neutralino.events.on("windowClose", onWindowClose);
 Neutralino.events.on("beforeunload", preRefresh)
 
+
+
+
 // save data on refresh or close
 
 

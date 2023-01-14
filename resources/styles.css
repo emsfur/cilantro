@@ -111,8 +111,6 @@ html {
     padding-right: 2rem;
 }
 
-
-
 .content-container {
     color: white;
     display: flex;
@@ -120,6 +118,24 @@ html {
     align-content: center;
     flex-direction: column;
     height: 100vh;
+    padding: 0rem 16%;
+
+}
+
+.header-container {
+    font-size: 2rem;
+}
+
+.content {
+    position: absolute;
+}
+
+.no-tasks {
+    font-size: 2rem;
+}
+
+.has-tasks {
+    visibility: hidden;
 }
 
 .calendar {
