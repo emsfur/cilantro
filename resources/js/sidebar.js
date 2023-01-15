@@ -1,7 +1,7 @@
 const taskContainer = document.querySelector('.tasks-container');
 
 async function startTaskListDB() {
-    let taskData = {};
+    let taskData = '{}';
 
     try {
         taskData = await Neutralino.storage.getData("taskList");

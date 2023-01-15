@@ -215,14 +215,14 @@ html {
 
 /* UPDATE COLOR SCHEME */
 .task-status-completed {
-    background-color: chartreuse;
-    box-shadow:0px 0px 0px 0.3rem chartreuse inset;
+    background-color: #03c03c;
+    box-shadow:0px 0px 0px 0.2rem #0b8f33 inset;
 
 }
 
 .task-status-failed {
-    box-shadow:0px 0px 0px 0.3rem darkred inset;
-    background-color: red;
+    background-color: #c00329;
+    box-shadow:0px 0px 0px 0.2rem #86041e inset;
 }
 
 .task-status-default {

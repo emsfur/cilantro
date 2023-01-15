@@ -183,9 +183,9 @@ document.querySelector('.del-task').addEventListener('click', async function() {
     // remove taskData from taskList and alasql, save to file, then delete file and re-render sidebar
     alasql(`DELETE FROM taskList WHERE name = '${taskName}'`)
 
-    await Neutralino.storage.setData("taskList", JSON.stringify( alasql(`SELECT * FROM taskList`) ));
+    await Neutralino.storage.setData('taskList', JSON.stringify( alasql(`SELECT * FROM taskList`) ));
 
-    await Neutralino.filesystem.removeFile(`./.storage/${taskName}.neustorage`);
+    await Neutralino.filesystem.removeFile(`./.storage/${taskName}.neustorage`)
     renderTasks();
     loadInitialContent();
 })

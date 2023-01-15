@@ -41,6 +41,7 @@ function onTrayMenuItemClicked(event) {
     }
 }
 
+// save data if user refreshes
 function preRefresh() {
     saveData();
 }
