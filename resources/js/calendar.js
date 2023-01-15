@@ -6,21 +6,20 @@
 // TODO: make it look nice...
 // ADDITIONAL: If I ever want to add customization to day cubes, I could just have a function that returns customized div html with name as input createDayDiv(dayNum, classes)
 
-// TODO: Use a template for the content area that fills based on sidebar input
-// https://www.youtube.com/watch?v=OSficvLDefM&ab_channel=LearnGoogleSheets%26ExcelSpreadsheets
+// TODO: currently doesn't allow for task name to contain spaces
+
+// TODO: I think task at the top task doesn't get deleted properly or something?
 
 // calendar source code: https://github.com/lashaNoz/Calendar
 // https://stackoverflow.com/questions/38884522/why-is-my-asynchronous-function-returning-promise-pending-instead-of-a-val
 
 const date = new Date();
-// console.log(date.toISOString().split('T')[0]);
 
 const taskToggle = ["task-status-default", "task-status-completed", "task-status-failed"];
 // const taskIdx = 0;
 
 // default classes added to all day elements
 const defClasses = ``
-
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
 const monthDays = document.querySelector('.days');
@@ -32,7 +31,6 @@ var taskDB = undefined;
 
 
 async function start(taskName) {
-    // let taskList = alasql(`SELECT * FROM taskList ORDER BY added ASC`)
     let fullTaskData = '{}';
 
     try {
@@ -42,15 +40,10 @@ async function start(taskName) {
     } finally {
         let taskJSON = JSON.parse(fullTaskData);
 
-        alasql(`CREATE TABLE ${taskName} (date DATE, done int)`);
+        alasql(`CREATE TABLE IF NOT EXISTS ${taskName} (date DATE, done int)`);
         alasql(`SELECT * INTO ${taskName} FROM ?`, [taskJSON]);
     }
 }
-
-// async function pushData(data) {
-//     let taskData = await Neutralino.storage.getData(taskName);
-//     console.log(taskData);
-// }
 
 function set_status(date) {
     let res = alasql(`SELECT * FROM ${taskName} WHERE date = "${date}"`)
@@ -159,7 +152,7 @@ document.querySelector('.days').addEventListener('click', (event) => {
     let isCurrMonth = (event.target.className.includes("next-days") || event.target.className.includes("prev-days")) !== true;
 
     // ensures that only the date elements are toggled, not the entire calendar itself
-    if (event.target.parentElement.className === "days" && isCurrMonth && editEnabled) {
+    if (event.target.parentElement.className === "days" && isCurrMonth) { // && editEnabled
         toggle_task_status(event);
     }
 });
@@ -178,17 +171,18 @@ async function edit_btn_handle(event) {
     }
 }
 
-// update button to say save after user presses it
-document.querySelector('.edit-task-status').addEventListener('click', edit_btn_handle);
-document.querySelector('.get-JSON').addEventListener('click', async function() {
-    // await Neutralino.storage.getData(taskName).then(result => {console.log(result)});
-    // console.log(alasql(`SELECT * FROM ${taskName}`));
-    console.log(alasql(`SELECT * FROM taskList`));
+// // update button to say save after user presses it
+// document.querySelector('.edit-task-status').addEventListener('click', edit_btn_handle);
+// document.querySelector('.get-JSON').addEventListener('click', async function() {
+//     // await Neutralino.storage.getData(taskName).then(result => {console.log(result)});
+//     // console.log(alasql(`SELECT * FROM ${taskName}`));
+//     console.log(alasql(`SELECT * FROM taskList`));
 
-});
+// });
 document.querySelector('.del-task').addEventListener('click', async function() {
     // remove taskData from taskList and alasql, save to file, then delete file and re-render sidebar
     alasql(`DELETE FROM taskList WHERE name = '${taskName}'`)
+
     await Neutralino.storage.setData("taskList", JSON.stringify( alasql(`SELECT * FROM taskList`) ));
 
     await Neutralino.filesystem.removeFile(`./.storage/${taskName}.neustorage`);
@@ -203,7 +197,6 @@ async function renderContent(taskNameInput) {
     taskName = taskNameInput
     await start(taskNameInput);
     renderCalendar(taskNameInput);
-
 }
 
 renderContent(taskName);

@@ -29,16 +29,18 @@ async function addTask(input) {
     let request = `EXISTS(SELECT * FROM taskList WHERE name = '${input}')`
     let exists = alasql(`SELECT ${request}`)[0][request];
 
-    if (exists) {
+    if (exists || input.trim().length === 0 || input.trim().length > 25 || input.includes(' ')) {
         var err = document.getElementById("err");
         err.classList.toggle("show");
         setTimeout(function(){
             err.classList.remove("show");
           }, 3000);
+        return false
     }
     else {
         alasql(`INSERT INTO taskList VALUES (NOW(), "${input}")`)
         await Neutralino.storage.setData("taskList", JSON.stringify( alasql(`SELECT * FROM taskList`) ));
+        return true
     }
 }
 
@@ -55,8 +57,10 @@ function loadInitialContent() {
         } else {
             taskName = taskList[ Math.round(Math.random(taskList)) ]["name"]
         }
-        // document.querySelector('.content-header').innerHTML = taskName
+
         document.getElementById(`${taskName}-tab`).click();
+        renderContent(taskName);
+
     }
     else {
         document.querySelector('.no-tasks').style.visibility = "visible";
@@ -64,7 +68,7 @@ function loadInitialContent() {
     }
 }
 
-document.querySelector(".tasks-container").addEventListener('click', (event) => {
+document.querySelector(".tasks-container").addEventListener('click', async function(event) {
     // ensures that only the date elements are toggled, not the entire calendar itself
     if (event.target.parentElement.className === "tasks-container") {
         let taskName = event.target.innerHTML.split(" ").at(-1)
@@ -82,6 +86,9 @@ document.querySelector(".tasks-container").addEventListener('click', (event) => 
         // ensure DB is clean, load in newDB and render calender again
         for (tableName of alasql('SHOW TABLES')) {
             if (tableName['tableid'] !== 'taskList') {
+                // save previous data to corresponding file
+                await Neutralino.storage.setData(tableName['tableid'], JSON.stringify( alasql(`SELECT * FROM ${tableName['tableid']}`) ));
+
                 alasql(`DROP TABLE ${tableName['tableid']}`)
                 renderContent(taskName)
             }
@@ -89,15 +96,21 @@ document.querySelector(".tasks-container").addEventListener('click', (event) => 
     }
 });
 
-document.querySelector(".new-task").addEventListener("keypress", function(e) {
+document.querySelector(".new-task").addEventListener("keypress", async function(e) {
     if (e.key === "Enter") {
         e.preventDefault();
         let taskName = e.currentTarget.value
-        addTask(taskName)
-        renderTasks();
-        loadInitialContent();
-        document.getElementById(`${taskName}-tab`).click();
         e.currentTarget.value = "";
+
+        let added = await addTask(taskName)
+        if (added) {
+            renderTasks();
+            // loadInitialContent();
+            document.querySelector('.no-tasks').style.visibility = "hidden";
+            document.querySelector('.has-tasks').style.visibility = "visible";
+            document.getElementById(`${taskName}-tab`).click();
+            renderContent(taskName);
+        }
     }
 });
 

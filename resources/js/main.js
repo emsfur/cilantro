@@ -1,5 +1,15 @@
+async function saveData(){
+    // ensure DB is clean, load in newDB and render calender again
+    for (tableName of alasql('SHOW TABLES')) {
+        if (tableName['tableid'] !== 'taskList') {
+            // save previous data to corresponding file
+            await Neutralino.storage.setData(tableName['tableid'], JSON.stringify( alasql(`SELECT * FROM ${tableName['tableid']}`) ));
+        }
+    }
+}
+
 function onWindowClose() {
-    // var taskName = alasql('SHOW TABLES')[0]['tableid']
+    saveData();
     Neutralino.app.exit();
 }
 
@@ -32,7 +42,7 @@ function onTrayMenuItemClicked(event) {
 }
 
 function preRefresh() {
-    console.log("Dun no");
+    saveData();
 }
 
 
@@ -50,6 +60,6 @@ Neutralino.events.on("beforeunload", preRefresh)
 
 
 
-if(NL_OS != "Darwin") { // TODO: Fix https://github.com/neutralinojs/neutralinojs/issues/615
-    setTray();
-}
+// if(NL_OS != "Darwin") { // TODO: Fix https://github.com/neutralinojs/neutralinojs/issues/615
+//     setTray();
+// }

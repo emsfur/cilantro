@@ -229,6 +229,18 @@ html {
     background-color: var(--cc1);
 }
 
+.del-task {
+    background: transparent;
+    border: 2px solid var(--cc2);
+    border-radius: 4px;
+    color: var(--cc5);
+    font-size: 2rem;
+}
+
+.del-task:hover {
+    background: var(--cc1);
+}
+
 .home-area {
     display: flex;
     justify-content: left;
