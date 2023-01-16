@@ -1,4 +1,4 @@
-<img align="left" src="./resources/icons/appIcon.png" alt="App Icon" width=35 style="margin-right: 10px"> <h1>Cilantro</h1>
+<img align="left" src="./resources/icons/appIcon.png" alt="App Icon" width=50 style="margin-right: 10px"> <h1>Cilantro</h1>
 
 ## Getting Started
 To use the app, simply download the [latest release](https://github.com/emsfur/cilantro/releases/tag/v1.0) and open the correlating executable file for your computer.
